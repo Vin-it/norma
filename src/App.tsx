@@ -15,7 +15,7 @@ const App = () => {
         <div className="navbar-right">
           <Link to="/">Home</Link>
           <Link to="/pubkeys">Pubkeys</Link>
-
+          <Link to="/kinds">Kinds</Link>
         </div>
       </div>
       <Outlet />

@@ -1,23 +1,9 @@
-import { MANAGER_API_BASE_URL, fromPayload, npubToHex } from "../../utils/general.utils";
+import { makeReq } from "../../utils/api.utils";
+import { npubToHex } from "../../utils/general.utils";
 
 export interface PubKeyReason {
     pubkey: string;
     reason: string;
-}
-
-export async function makeReq(payload: Record<string, unknown>) {
-    const eventBase64 = await fromPayload(payload);
-
-    return fetch(
-        `${MANAGER_API_BASE_URL}/admin/manage`,
-        {
-            method: 'POST',
-            body: JSON.stringify(payload),
-            headers: {
-                Authorization: `Nostr ${eventBase64}`
-            }
-        }
-    );
 }
 
 export async function loadWhitelist(): Promise<PubKeyReason[]> {

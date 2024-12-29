@@ -6,6 +6,9 @@
   - ✅ allowpubkey
   - ✅ banpubkey
   - ✅ listallowedpubkeys
+  - ✅ allowkind
+  - ✅ disallowkind
+  - ✅ listallowedkinds
 
 ## Setup
 
