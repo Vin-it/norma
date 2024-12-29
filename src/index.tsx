@@ -3,6 +3,7 @@ import App from './App';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import Pubkeys from './components/Pubkeys/Pubkeys';
 import Kinds from './components/Kinds/Kinds';
+import Metadata from './components/Metadata/Metadata';
 
 document.onreadystatechange = () => {
   if (document.readyState === "complete") {
@@ -12,7 +13,8 @@ document.onreadystatechange = () => {
       root.render(
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<App />}>
+            <Route element={<App />}>
+              <Route path="/" element={<Metadata />} />
               <Route path="/pubkeys" element={<Pubkeys />} />
               <Route path="/kinds" element={<Kinds />} />
             </Route>

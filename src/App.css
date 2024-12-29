@@ -48,3 +48,10 @@ a {
   font-weight: 400;
   opacity: 0.5;
 }
+
+
+.metadata {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
