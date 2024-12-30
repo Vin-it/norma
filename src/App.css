@@ -55,3 +55,15 @@ a {
   flex-direction: column;
   gap: 5px;
 }
+
+.blossom-image-thumbnail {
+  width: 100px;
+}
+
+.descriptor-list {
+  display: flex;
+}
+
+.descriptor {
+  display: flex;
+}

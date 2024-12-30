@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import Pubkeys from './components/Pubkeys/Pubkeys';
 import Kinds from './components/Kinds/Kinds';
 import Metadata from './components/Metadata/Metadata';
+import { Blossom } from './components/Blossom/Blossom';
 
 document.onreadystatechange = () => {
   if (document.readyState === "complete") {
@@ -17,6 +18,7 @@ document.onreadystatechange = () => {
               <Route path="/" element={<Metadata />} />
               <Route path="/pubkeys" element={<Pubkeys />} />
               <Route path="/kinds" element={<Kinds />} />
+              <Route path="/blossom" element={<Blossom />} />
             </Route>
           </Routes>
         </BrowserRouter>,

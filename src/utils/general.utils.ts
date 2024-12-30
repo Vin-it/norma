@@ -21,7 +21,7 @@ async function constructManagementApiEvent(payloadHash: string) {
     })
 }
 
-async function getPayloadSha256(payload: Record<string, unknown>) {
+export async function getPayloadSha256(payload: Record<string, unknown> | File) {
     const encoder = new TextEncoder();
     const data = encoder.encode(JSON.stringify(payload));
     const hashBuffer = await window.crypto.subtle.digest("SHA-256", data);
@@ -32,7 +32,7 @@ async function getPayloadSha256(payload: Record<string, unknown>) {
     return hashHex;
 }
 
-type EventHash = string;
+export type EventHash = string;
 export async function fromPayload(payload: Record<string, unknown>): Promise<EventHash> {
     const payloadHash = await getPayloadSha256(payload);
     const event = await constructManagementApiEvent(payloadHash);
