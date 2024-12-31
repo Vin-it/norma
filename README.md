@@ -11,6 +11,7 @@
   - ✅ listallowedkinds
   - ✅ changerelayname
   - ✅ changerelaydescription
+  - ✅ changerelayicon
 
 ## Setup
 

@@ -8,10 +8,11 @@ interface Metadata {
     name: string;
     pubkey: string;
     description: string;
+    icon: string;
 }
 
 export default function Metadata() {
-    const [metadata, setMetadata] = useState<Metadata>({ name: '', pubkey: '', description: '' });
+    const [metadata, setMetadata] = useState<Metadata>({ name: '', pubkey: '', description: '', icon: '' });
     const [supportedMethods, setSupportedMethods] = useState<string[]>([]);
 
     const loadData = async () => {
@@ -45,6 +46,16 @@ export default function Metadata() {
         return false;
     }
 
+    const handleIconUpdate = async (iconUrl: string) => {
+        const res = await makeReq({ method: "changerelayicon", params: [iconUrl] });
+        if (res.ok) {
+            const result = await res.json();
+            if (result.error) return false;
+            return true;
+        }
+        return false;
+    }
+
     return (
         <>
             <div className="metadata">
@@ -54,6 +65,9 @@ export default function Metadata() {
                 <EditableInput
                     display="Description" value={metadata.description}
                     func={handleDescriptionUpdate} />
+                <EditableInput
+                    display="Icon Url" value={metadata.icon}
+                    func={handleIconUpdate} />
                 <span><b>Relay:</b> {RELAY_URL}</span>
                 <span><b>Owner:</b> {metadata.pubkey}</span>
                 <div className="supported-methods">
@@ -103,7 +117,12 @@ function EditableInput({ display, value, func }: EditableInputProps) {
                     </button>
                 </> :
                 <>
-                    <span><b>{display}:</b> {inputValue}</span>
+                    <span>
+                        <b>{display}: </b>
+                        {inputValue.includes('http') ?
+                            <a href={inputValue} >{inputValue}</a> :
+                            inputValue}
+                    </span>
                     <span style={{ cursor: 'pointer' }}
                         onClick={() => setEditing(prevState => !prevState)}>
                         ✎
