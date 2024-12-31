@@ -9,6 +9,8 @@
   - ✅ allowkind
   - ✅ disallowkind
   - ✅ listallowedkinds
+  - ✅ changerelayname
+  - ✅ changerelaydescription
 
 ## Setup
 
