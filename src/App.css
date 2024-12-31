@@ -67,3 +67,7 @@ a {
 .descriptor {
   display: flex;
 }
+
+.supported-methods {
+  max-width: 960px;
+}

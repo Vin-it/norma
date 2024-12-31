@@ -56,8 +56,10 @@ export default function Metadata() {
                     func={handleDescriptionUpdate} />
                 <span><b>Relay:</b> {RELAY_URL}</span>
                 <span><b>Owner:</b> {metadata.pubkey}</span>
-                <span><b>Supported Methods:</b></span>
-                <ul> {supportedMethods.map(s => <li key={s}>{s}</li>)}</ul>
+                <div className="supported-methods">
+                    <span><b>Supported Methods:</b></span>
+                    {supportedMethods.map((s, idx) => <span>{' '}✅ {s} {idx === supportedMethods.length ? ',' : ''}</span>)}
+                </div>
             </div>
         </>
     )
