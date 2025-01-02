@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import { fromEvent, fromHash, fromPayload } from "../../utils/blossom.utils";
-import { MANAGER_API_BASE_URL } from "../../utils/general.utils";
 import { loadWhitelist } from "../Pubkeys/api";
+import { UrlStore } from "../../utils/url.store";
 
 
 interface Descriptor {
@@ -23,7 +23,7 @@ export function Blossom() {
         if (!file) return;
 
         const hash = await fromPayload(file);
-        const response = await fetch(`${MANAGER_API_BASE_URL}/upload`, {
+        const response = await fetch(`${UrlStore.getBaseUrl()}/upload`, {
             method: 'PUT', headers: {
                 'content-type': file.type,
                 'content-length': `${file.size}`,
@@ -45,7 +45,7 @@ export function Blossom() {
         const descriptors: Descriptor[] = [];
 
         for (let i = 0; i < pubkeys.length; i++) {
-            const response = await fetch(`${MANAGER_API_BASE_URL}/list/${pubkeys[i].pubkey}`, {
+            const response = await fetch(`${UrlStore.getBaseUrl()}/list/${pubkeys[i].pubkey}`, {
                 method: 'GET', headers: {
                     Authorization: `Nostr ${hash}`
                 },
@@ -62,7 +62,7 @@ export function Blossom() {
         const authToken = await fromHash(hash);
 
         const response = await fetch(
-            `${MANAGER_API_BASE_URL}/${hash}`,
+            `${UrlStore.getBaseUrl()}/${hash}`,
             { method: 'DELETE', headers: { Authorization: `Nostr ${authToken}` } }
         );
 

@@ -1,10 +1,11 @@
-import { MANAGER_API_BASE_URL, fromPayload } from "./general.utils";
+import { fromPayload } from "./general.utils";
+import { UrlStore } from "./url.store";
 
 export async function makeReq(payload: Record<string, unknown>) {
     const eventBase64 = await fromPayload(payload);
 
     return fetch(
-        `${MANAGER_API_BASE_URL}/admin/manage`,
+        UrlStore.getFullManagerUrl(),
         {
             method: 'POST',
             body: JSON.stringify(payload),

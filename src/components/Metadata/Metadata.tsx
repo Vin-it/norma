@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { loadMetadata, loadSupportedMethods } from "./api";
 import { makeReq } from "../../utils/api.utils";
-
-const RELAY_URL = process.env.RELAY_URL || '';
+import { UrlStore } from "../../utils/url.store";
 
 interface Metadata {
     name: string;
@@ -14,6 +13,10 @@ interface Metadata {
 export default function Metadata() {
     const [metadata, setMetadata] = useState<Metadata>({ name: '', pubkey: '', description: '', icon: '' });
     const [supportedMethods, setSupportedMethods] = useState<string[]>([]);
+    const [api, setApi] = useState({
+        MANAGER_API_BASE_URL: UrlStore.getBaseUrlUnsafe(),
+        MANAGER_API_ENDPOINT: UrlStore.getManagerEndpointUnsafe()
+    })
 
     const loadData = async () => {
         const supportedMethods = await loadSupportedMethods();
@@ -24,7 +27,7 @@ export default function Metadata() {
 
     useEffect(() => {
         loadData();
-    }, []);
+    }, [api.MANAGER_API_BASE_URL, api.MANAGER_API_ENDPOINT]);
 
     const handleRelayNameUpdate = async (name: string) => {
         const res = await makeReq({ method: "changerelayname", params: [name] });
@@ -56,6 +59,39 @@ export default function Metadata() {
         return false;
     }
 
+    const handleBaseUrlUpdate = async (baseUrl: string) => {
+        setApi(prevState => ({
+            ...prevState,
+            MANAGER_API_BASE_URL: baseUrl,
+        }));
+        return true;
+    }
+    const handleEndpointUpdate = async (endpoint: string) => {
+        setApi(prevState => ({
+            ...prevState,
+            MANAGER_API_ENDPOINT: endpoint,
+        }));
+        return true;
+    }
+
+    const handleSaveUrl = (baseUrl: string, endpoint: string) => {
+        if (!baseUrl || !endpoint) {
+            return false;
+        }
+
+        UrlStore.setBaseUrl(baseUrl);
+        UrlStore.setEndpoint(endpoint);
+        setApi({
+            MANAGER_API_BASE_URL: baseUrl,
+            MANAGER_API_ENDPOINT: endpoint,
+        });
+        return true;
+    }
+
+    if (!api.MANAGER_API_BASE_URL || !api.MANAGER_API_ENDPOINT) {
+        return <InitializeApp handleSaveUrl={handleSaveUrl} />
+    }
+
     return (
         <>
             <div className="metadata">
@@ -68,14 +104,49 @@ export default function Metadata() {
                 <EditableInput
                     display="Icon Url" value={metadata.icon}
                     func={handleIconUpdate} />
-                <span><b>Relay:</b> {RELAY_URL}</span>
+                <EditableInput
+                    display="Relay Management API URL" value={api.MANAGER_API_BASE_URL ?? ''}
+                    func={handleBaseUrlUpdate} />
+                <EditableInput
+                    display="Relay Management API Endpoint" value={api.MANAGER_API_ENDPOINT ?? ''}
+                    func={handleEndpointUpdate} />
                 <span><b>Owner:</b> {metadata.pubkey}</span>
                 <div className="supported-methods">
                     <span><b>Supported Methods:</b></span>
-                    {supportedMethods.map((s, idx) => <span>{' '}✅ {s} {idx === supportedMethods.length ? ',' : ''}</span>)}
+                    {supportedMethods.map((s, idx) => <span key={idx}>{' '}✅ {s} {idx === supportedMethods.length ? ',' : ''}</span>)}
                 </div>
+                <button onClick={() => {
+                    const confirmed = confirm("are you sure?");
+                    if (confirmed) {
+                        localStorage.clear();
+                        setApi({
+                            MANAGER_API_BASE_URL: null,
+                            MANAGER_API_ENDPOINT: null,
+                        });
+                    }
+                }}>⚠️ RESET</button>
             </div>
         </>
+    )
+}
+
+function InitializeApp({ handleSaveUrl }: { handleSaveUrl: (baseUrl: string, endpoint: string) => boolean }) {
+    const [baseUrl, setBaseUrl] = useState('');
+    const [endpoint, setEndpoint] = useState('');
+
+    return (
+        <div>
+            Relay Base Url: <input type="text" value={baseUrl}
+                onChange={(e) => setBaseUrl(e.currentTarget.value)} placeholder="Example, http://myrelay.com"
+            />
+            Relay management endpoint: <input type="text" value={endpoint}
+                onChange={(e) => setEndpoint(e.currentTarget.value)} placeholder="Example, /admin/manager"
+            />
+            <button onClick={() => {
+                if (!baseUrl || !endpoint) return;
+                handleSaveUrl(baseUrl, endpoint)
+            }}>Save</button>
+        </div>
     )
 }
 
