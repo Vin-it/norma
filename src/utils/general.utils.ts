@@ -1,7 +1,5 @@
 import { bech32 } from '@scure/base';
 
-export const MANAGER_API_BASE_URL = process.env.MANAGER_API_BASE_URL || 'http://localhost:8080';
-
 declare global {
     interface Window {
         nostr?: {

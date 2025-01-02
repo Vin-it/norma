@@ -1,9 +1,9 @@
 import { makeReq } from "../../utils/api.utils";
-import { MANAGER_API_BASE_URL } from "../../utils/general.utils";
+import { UrlStore } from "../../utils/url.store";
 
 export async function loadMetadata() {
     const res = await fetch(
-        `${MANAGER_API_BASE_URL}`,
+        `${UrlStore.getBaseUrl()}`,
         {
             method: 'GET',
             headers: {
