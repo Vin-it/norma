@@ -9,14 +9,19 @@ interface Metadata {
     description: string;
     icon: string;
 }
-
-export default function Metadata() {
+interface MetadataProps {
+    api: {
+        MANAGER_API_BASE_URL: string | null;
+        MANAGER_API_ENDPOINT: string | null;
+    };
+    setApi: React.Dispatch<React.SetStateAction<{
+        MANAGER_API_BASE_URL: string | null;
+        MANAGER_API_ENDPOINT: string | null;
+    }>>
+}
+export default function Metadata({ api, setApi }: MetadataProps) {
     const [metadata, setMetadata] = useState<Metadata>({ name: '', pubkey: '', description: '', icon: '' });
     const [supportedMethods, setSupportedMethods] = useState<string[]>([]);
-    const [api, setApi] = useState({
-        MANAGER_API_BASE_URL: UrlStore.getBaseUrlUnsafe(),
-        MANAGER_API_ENDPOINT: UrlStore.getManagerEndpointUnsafe()
-    })
 
     const loadData = async () => {
         const supportedMethods = await loadSupportedMethods();
@@ -27,7 +32,7 @@ export default function Metadata() {
 
     useEffect(() => {
         loadData();
-    }, [api.MANAGER_API_BASE_URL, api.MANAGER_API_ENDPOINT]);
+    }, []);
 
     const handleRelayNameUpdate = async (name: string) => {
         const res = await makeReq({ method: "changerelayname", params: [name] });
@@ -74,24 +79,6 @@ export default function Metadata() {
         return true;
     }
 
-    const handleSaveUrl = (baseUrl: string, endpoint: string) => {
-        if (!baseUrl || !endpoint) {
-            return false;
-        }
-
-        UrlStore.setBaseUrl(baseUrl);
-        UrlStore.setEndpoint(endpoint);
-        setApi({
-            MANAGER_API_BASE_URL: baseUrl,
-            MANAGER_API_ENDPOINT: endpoint,
-        });
-        return true;
-    }
-
-    if (!api.MANAGER_API_BASE_URL || !api.MANAGER_API_ENDPOINT) {
-        return <InitializeApp handleSaveUrl={handleSaveUrl} />
-    }
-
     return (
         <>
             <div className="metadata">
@@ -128,6 +115,35 @@ export default function Metadata() {
             </div>
         </>
     )
+}
+
+export function AppLoader() {
+    const [api, setApi] = useState({
+        MANAGER_API_BASE_URL: UrlStore.getBaseUrlUnsafe(),
+        MANAGER_API_ENDPOINT: UrlStore.getManagerEndpointUnsafe()
+    });
+
+    const handleSaveUrl = (baseUrl: string, endpoint: string) => {
+        if (!baseUrl || !endpoint) {
+            return false;
+        }
+
+        UrlStore.setBaseUrl(baseUrl);
+        UrlStore.setEndpoint(endpoint);
+        setApi({
+            MANAGER_API_BASE_URL: baseUrl,
+            MANAGER_API_ENDPOINT: endpoint,
+        });
+        return true;
+    }
+
+
+    if (!api.MANAGER_API_BASE_URL || !api.MANAGER_API_ENDPOINT) {
+        return <InitializeApp handleSaveUrl={handleSaveUrl} />
+    }
+
+    return <Metadata api={api} setApi={setApi} />
+
 }
 
 function InitializeApp({ handleSaveUrl }: { handleSaveUrl: (baseUrl: string, endpoint: string) => boolean }) {
