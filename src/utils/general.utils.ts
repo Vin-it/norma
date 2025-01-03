@@ -1,4 +1,5 @@
 import { bech32 } from '@scure/base';
+import { UrlStore } from './url.store';
 
 declare global {
     interface Window {
@@ -15,7 +16,7 @@ async function constructManagementApiEvent(payloadHash: string) {
         content: "",
         kind: 27235,
         created_at: Math.floor(new Date().getTime() / 1000),
-        tags: [["u", "https://localhost:8080"], ["method", "POST"], ["payload", payloadHash]]
+        tags: [["u", UrlStore.getBaseUrl()], ["method", "POST"], ["payload", payloadHash]]
     })
 }
 
