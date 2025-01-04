@@ -2,8 +2,8 @@ import { defineConfig, rspack } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 
 export default defineConfig({
-  plugins: [pluginReact()],
-  html: {
-    title: 'Norma: Nostr Relay Manager',
-  },
+	plugins: [pluginReact()],
+	html: {
+		title: 'Norma: Nostr Relay Manager',
+	},
 });

@@ -7,22 +7,22 @@ import Metadata from './components/Metadata/Metadata';
 import { Blossom } from './components/Blossom/Blossom';
 
 document.onreadystatechange = () => {
-  if (document.readyState === "complete") {
-    const rootEl = document.getElementById('root');
-    if (rootEl) {
-      const root = ReactDOM.createRoot(rootEl);
-      root.render(
-        <BrowserRouter>
-          <Routes>
-            <Route element={<App />}>
-              <Route path="/" element={<Metadata />} />
-              <Route path="/pubkeys" element={<Pubkeys />} />
-              <Route path="/kinds" element={<Kinds />} />
-              <Route path="/blossom" element={<Blossom />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>,
-      );
-    }
-  }
+	if (document.readyState === 'complete') {
+		const rootEl = document.getElementById('root');
+		if (rootEl) {
+			const root = ReactDOM.createRoot(rootEl);
+			root.render(
+				<BrowserRouter>
+					<Routes>
+						<Route element={<App />}>
+							<Route path="/" element={<Metadata />} />
+							<Route path="/pubkeys" element={<Pubkeys />} />
+							<Route path="/kinds" element={<Kinds />} />
+							<Route path="/blossom" element={<Blossom />} />
+						</Route>
+					</Routes>
+				</BrowserRouter>,
+			);
+		}
+	}
 };
