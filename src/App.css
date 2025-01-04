@@ -1,72 +1,72 @@
 body {
-  margin: 0;
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+	margin: 0;
+	font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
 }
 
 .content {
-  min-height: 100vh;
-  line-height: 1.1;
-  position: relative;
-  width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 20px;
-  box-sizing: border-box;
+	min-height: 100vh;
+	line-height: 1.1;
+	position: relative;
+	width: 100%;
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 0 20px;
+	box-sizing: border-box;
 }
 
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
 }
 
 .whitelist {
-  display: flex;
-  gap: 8px;
+	display: flex;
+	gap: 8px;
 }
 
 .whitelist-remove {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 .navbar-right {
-  display: flex;
-  gap: 8px;
+	display: flex;
+	gap: 8px;
 }
 
 .navbar-left {
-  display: flex;
-  gap: 8px;
-  align-items: baseline;
+	display: flex;
+	gap: 8px;
+	align-items: baseline;
 }
 
 a {
-  text-decoration: underline;
+	text-decoration: underline;
 }
 
 .content h1 {
-  font-size: 3.6rem;
-  font-weight: 700;
+	font-size: 3.6rem;
+	font-weight: 700;
 }
 
 .metadata {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
 }
 
 .blossom-image-thumbnail {
-  width: 100px;
+	width: 100px;
 }
 
 .descriptor-list {
-  display: flex;
+	display: flex;
 }
 
 .descriptor {
-  display: flex;
+	display: flex;
 }
 
 .supported-methods {
-  max-width: 960px;
+	max-width: 960px;
 }
