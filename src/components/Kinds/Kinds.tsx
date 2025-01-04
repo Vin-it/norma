@@ -5,12 +5,11 @@ export default function Kinds() {
 	const [allowedKinds, setAllowedKinds] = useState<number[]>([]);
 	const [kindInput, setKindInput] = useState('');
 
-	const loadData = async () => {
-		const whitelist = await loadAllowedKinds();
-		setAllowedKinds(whitelist);
-	};
-
 	useEffect(() => {
+		const loadData = async () => {
+			const whitelist = await loadAllowedKinds();
+			setAllowedKinds(whitelist);
+		};
 		loadData();
 	}, []);
 
@@ -18,13 +17,13 @@ export default function Kinds() {
 		const result = await allowKind(Number(kindInput));
 		if (result) {
 			setKindInput('');
-			loadData();
+			setAllowedKinds([...allowedKinds, Number(kindInput)]);
 		}
 	};
 
 	const handleDisallowClick = async (kind: number) => {
 		const result = await disallowKind(kind);
-		if (result) loadData();
+		if (result) setAllowedKinds(allowedKinds.filter((k) => k !== kind));
 	};
 
 	return (
@@ -36,7 +35,9 @@ export default function Kinds() {
 				value={kindInput}
 				onChange={(e) => setKindInput(e.target.value)}
 			/>
-			<button onClick={handleAllowClick}>Whitelist kind</button>
+			<button type="button" onClick={handleAllowClick}>
+				Whitelist kind
+			</button>
 			<ul>
 				{allowedKinds.sort().map((k) => (
 					<li key={k}>
@@ -44,6 +45,7 @@ export default function Kinds() {
 						<span
 							className="whitelist-remove"
 							onClick={() => handleDisallowClick(k)}
+							onKeyDown={() => handleDisallowClick(k)}
 						>
 							{' '}
 							❌
