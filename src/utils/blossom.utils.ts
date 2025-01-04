@@ -1,4 +1,4 @@
-import { EventHash, getPayloadSha256 } from "./general.utils";
+import { type EventHash, getPayloadSha256 } from "./general.utils";
 
 export async function constructBlossomUploadEvent(payload: string) {
     const createdAt = Math.floor(new Date().getTime() / 1000);

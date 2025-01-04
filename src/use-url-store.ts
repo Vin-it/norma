@@ -8,8 +8,8 @@ export const useUrlStore = () => {
     });
 
     const handleSetApi = (baseUrl?: string, endpoint?: string) => {
-        let localBaseURl = baseUrl ?? UrlStore.getBaseUrl();
-        let localEndpoint = endpoint ?? UrlStore.getEndpoint();
+        const localBaseURl = baseUrl ?? UrlStore.getBaseUrl();
+        const localEndpoint = endpoint ?? UrlStore.getEndpoint();
 
         UrlStore.setBaseUrl(localBaseURl);
         UrlStore.setEndpoint(localEndpoint);

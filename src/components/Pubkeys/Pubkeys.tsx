@@ -1,7 +1,7 @@
 
 
 import { useEffect, useState } from "react";
-import { PubKeyReason, banPubkey, loadWhitelist, whitelistPubkey } from "./api";
+import { type PubKeyReason, banPubkey, loadWhitelist, whitelistPubkey } from "./api";
 
 
 export default function Pubkeys() {

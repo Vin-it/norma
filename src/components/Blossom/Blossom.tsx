@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { type ChangeEvent, useEffect, useState } from "react"
 import { fromEvent, fromHash, fromPayload } from "../../utils/blossom.utils";
 import { loadWhitelist } from "../Pubkeys/api";
 import { UrlStore } from "../../utils/url.store";
