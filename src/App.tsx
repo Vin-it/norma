@@ -75,6 +75,7 @@ function InitializeApp({
 				placeholder="Example, /admin/manage"
 			/>
 			<button
+				type="button"
 				onClick={() => {
 					if (!baseUrl || !endpoint) return;
 					handleSetApi(baseUrl, endpoint);
