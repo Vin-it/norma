@@ -19,6 +19,11 @@ export class UrlStore {
         localStorage.setItem('MANAGER_API_ENDPOINT', value);
     }
 
+    static resetStore() {
+        localStorage.removeItem('MANAGER_API_ENDPOINT');
+        localStorage.removeItem('MANAGER_API_BASE_URL');
+    }
+
     static getBaseUrlUnsafe() {
         return this.MANAGER_API_BASE_URL;
     }

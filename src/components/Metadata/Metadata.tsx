@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { loadMetadata, loadSupportedMethods } from "./api";
 import { makeReq } from "../../utils/api.utils";
-import { UrlStore } from "../../utils/url.store";
+import { useUrlContext } from "../../UrlContext";
 
 interface Metadata {
     name: string;
@@ -13,10 +13,7 @@ interface Metadata {
 export default function Metadata() {
     const [metadata, setMetadata] = useState<Metadata>({ name: '', pubkey: '', description: '', icon: '' });
     const [supportedMethods, setSupportedMethods] = useState<string[]>([]);
-    const [api, setApi] = useState({
-        MANAGER_API_BASE_URL: UrlStore.getBaseUrlUnsafe(),
-        MANAGER_API_ENDPOINT: UrlStore.getManagerEndpointUnsafe()
-    })
+    const { api, handleSetApi, resetStore } = useUrlContext();
 
     const loadData = async () => {
         const supportedMethods = await loadSupportedMethods();
@@ -60,36 +57,12 @@ export default function Metadata() {
     }
 
     const handleBaseUrlUpdate = async (baseUrl: string) => {
-        setApi(prevState => ({
-            ...prevState,
-            MANAGER_API_BASE_URL: baseUrl,
-        }));
+        handleSetApi(baseUrl);
         return true;
     }
     const handleEndpointUpdate = async (endpoint: string) => {
-        setApi(prevState => ({
-            ...prevState,
-            MANAGER_API_ENDPOINT: endpoint,
-        }));
+        handleSetApi(undefined, endpoint);
         return true;
-    }
-
-    const handleSaveUrl = (baseUrl: string, endpoint: string) => {
-        if (!baseUrl || !endpoint) {
-            return false;
-        }
-
-        UrlStore.setBaseUrl(baseUrl);
-        UrlStore.setEndpoint(endpoint);
-        setApi({
-            MANAGER_API_BASE_URL: baseUrl,
-            MANAGER_API_ENDPOINT: endpoint,
-        });
-        return true;
-    }
-
-    if (!api.MANAGER_API_BASE_URL || !api.MANAGER_API_ENDPOINT) {
-        return <InitializeApp handleSaveUrl={handleSaveUrl} />
     }
 
     return (
@@ -118,35 +91,11 @@ export default function Metadata() {
                 <button onClick={() => {
                     const confirmed = confirm("are you sure?");
                     if (confirmed) {
-                        localStorage.clear();
-                        setApi({
-                            MANAGER_API_BASE_URL: null,
-                            MANAGER_API_ENDPOINT: null,
-                        });
+                        resetStore();
                     }
                 }}>⚠️ RESET</button>
             </div>
         </>
-    )
-}
-
-function InitializeApp({ handleSaveUrl }: { handleSaveUrl: (baseUrl: string, endpoint: string) => boolean }) {
-    const [baseUrl, setBaseUrl] = useState('');
-    const [endpoint, setEndpoint] = useState('');
-
-    return (
-        <div>
-            Relay Base Url: <input type="text" value={baseUrl}
-                onChange={(e) => setBaseUrl(e.currentTarget.value)} placeholder="Example, http://myrelay.com"
-            />
-            Relay management endpoint: <input type="text" value={endpoint}
-                onChange={(e) => setEndpoint(e.currentTarget.value)} placeholder="Example, /admin/manager"
-            />
-            <button onClick={() => {
-                if (!baseUrl || !endpoint) return;
-                handleSaveUrl(baseUrl, endpoint)
-            }}>Save</button>
-        </div>
     )
 }
 
