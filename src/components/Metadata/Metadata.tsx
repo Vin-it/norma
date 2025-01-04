@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { loadMetadata, loadSupportedMethods } from './api';
 import { makeReq } from '../../utils/api.utils';
 import { useUrlContext } from '../../UrlContext';
@@ -20,16 +20,19 @@ export default function Metadata() {
 	const [supportedMethods, setSupportedMethods] = useState<string[]>([]);
 	const { api, handleSetApi, resetStore } = useUrlContext();
 
-	const loadData = async () => {
+	const loadAndSetSupportedMethods = useCallback(async () => {
 		const supportedMethods = await loadSupportedMethods();
+		setSupportedMethods(supportedMethods);
+	}, []);
+	const loadAndSetMetadata = useCallback(async () => {
 		const metadata = await loadMetadata();
 		setMetadata(metadata);
-		setSupportedMethods(supportedMethods);
-	};
+	}, []);
 
 	useEffect(() => {
-		loadData();
-	}, [api.MANAGER_API_BASE_URL, api.MANAGER_API_ENDPOINT]);
+		loadAndSetSupportedMethods();
+		loadAndSetMetadata();
+	}, [loadAndSetMetadata, loadAndSetSupportedMethods]);
 
 	const handleRelayNameUpdate = async (name: string) => {
 		const res = await makeReq({ method: 'changerelayname', params: [name] });
@@ -66,10 +69,12 @@ export default function Metadata() {
 
 	const handleBaseUrlUpdate = async (baseUrl: string) => {
 		handleSetApi(baseUrl);
+		await loadSupportedMethods();
 		return true;
 	};
 	const handleEndpointUpdate = async (endpoint: string) => {
 		handleSetApi(undefined, endpoint);
+		await loadSupportedMethods();
 		return true;
 	};
 
@@ -109,13 +114,14 @@ export default function Metadata() {
 						<b>Supported Methods:</b>
 					</span>
 					{supportedMethods.map((s, idx) => (
-						<span key={idx}>
+						<span key={s}>
 							{' '}
 							✅ {s} {idx === supportedMethods.length ? ',' : ''}
 						</span>
 					))}
 				</div>
 				<button
+					type="button"
 					onClick={() => {
 						const confirmed = confirm('are you sure?');
 						if (confirmed) {
@@ -142,7 +148,7 @@ function EditableInput({ display, value, func }: EditableInputProps) {
 
 	useEffect(() => {
 		if (!inputValue) setInputValue(value);
-	}, [value]);
+	}, [value, inputValue]);
 
 	const handleSaveClick = async () => {
 		setEditing(false);
@@ -161,6 +167,7 @@ function EditableInput({ display, value, func }: EditableInputProps) {
 						onChange={(e) => setInputValue(e.currentTarget.value)}
 					/>
 					<button
+						type="button"
 						onClick={handleSaveClick}
 						className="column column-offset-10 column-10"
 					>
@@ -180,6 +187,7 @@ function EditableInput({ display, value, func }: EditableInputProps) {
 					<span
 						style={{ cursor: 'pointer' }}
 						onClick={() => setEditing((prevState) => !prevState)}
+						onKeyDown={() => setEditing((prevState) => !prevState)}
 					>
 						✎
 					</span>
