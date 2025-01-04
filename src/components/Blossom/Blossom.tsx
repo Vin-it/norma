@@ -1,4 +1,4 @@
-import { type ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { fromEvent, fromHash, fromPayload } from '../../utils/blossom.utils';
 import { loadWhitelist } from '../Pubkeys/api';
 import { UrlStore } from '../../utils/url.store';
@@ -39,7 +39,8 @@ export function Blossom() {
 			}
 		}
 	};
-	const loadData = async () => {
+
+	const loadData = useCallback(async () => {
 		const pubkeys = await loadWhitelist();
 		const hash = await fromEvent();
 		const descriptors: Descriptor[] = [];
@@ -60,7 +61,7 @@ export function Blossom() {
 			}
 		}
 		setDescriptors(descriptors);
-	};
+	}, []);
 
 	const deleteBlob = async (hash: string) => {
 		const authToken = await fromHash(hash);
@@ -77,19 +78,21 @@ export function Blossom() {
 
 	useEffect(() => {
 		loadData();
-	}, []);
+	}, [loadData]);
 
 	return (
 		<>
 			<h1>Blossom</h1>
 			<input type="file" onChange={handleFileChange} />
-			<button onClick={handleUpload}>Upload</button>
+			<button type="button" onClick={handleUpload}>
+				Upload
+			</button>
 			<hr />
 			<div>
 				<h3>Blobs</h3>
 				<div className="descriptor-list">
 					{descrptors.map((d) => (
-						<Descriptor descriptor={d} deleteFunc={deleteBlob} />
+						<Descriptor key={d.sha256} descriptor={d} deleteFunc={deleteBlob} />
 					))}
 				</div>
 			</div>
@@ -106,6 +109,7 @@ function Descriptor({ descriptor, deleteFunc }: DescriptorProps) {
 	return (
 		<div className="descriptor" key={descriptor.sha256}>
 			{isImageUrl(descriptor.url) ? (
+				// biome-ignore lint/a11y/useAltText: <explanation>
 				<img
 					className="blossom-image-thumbnail"
 					src={descriptor.url.replace('https://', 'http://')}
@@ -114,6 +118,7 @@ function Descriptor({ descriptor, deleteFunc }: DescriptorProps) {
 				<a href={descriptor.url}>{descriptor.url}</a>
 			)}
 			<span
+				onKeyDown={() => deleteFunc(descriptor.sha256)}
 				className="whitelist-remove"
 				onClick={() => deleteFunc(descriptor.sha256)}
 			>
