@@ -43,13 +43,6 @@ a {
   font-weight: 700;
 }
 
-.content p {
-  font-size: 1.2rem;
-  font-weight: 400;
-  opacity: 0.5;
-}
-
-
 .metadata {
   display: flex;
   flex-direction: column;
