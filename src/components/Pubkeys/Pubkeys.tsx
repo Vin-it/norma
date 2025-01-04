@@ -5,17 +5,17 @@ import {
 	loadWhitelist,
 	whitelistPubkey,
 } from './api';
+import { npubToHex } from '../../utils/general.utils';
 
 export default function Pubkeys() {
 	const [whitelist, setWhitelist] = useState<PubKeyReason[]>([]);
 	const [npubInput, setNpubInput] = useState('');
 
-	const loadData = async () => {
-		const whitelist = await loadWhitelist();
-		setWhitelist(whitelist);
-	};
-
 	useEffect(() => {
+		const loadData = async () => {
+			const whitelist = await loadWhitelist();
+			setWhitelist(whitelist);
+		};
 		loadData();
 	}, []);
 
@@ -23,13 +23,16 @@ export default function Pubkeys() {
 		const result = await whitelistPubkey(npubInput);
 		if (result) {
 			setNpubInput('');
-			loadData();
+			setWhitelist([
+				...whitelist,
+				{ pubkey: npubToHex(npubInput), reason: '' },
+			]);
 		}
 	};
 
 	const handleBanClick = async (pubkey: string) => {
 		const result = await banPubkey(pubkey);
-		if (result) loadData();
+		if (result) setWhitelist(whitelist.filter((wl) => wl.pubkey !== pubkey));
 	};
 
 	return (
@@ -40,11 +43,13 @@ export default function Pubkeys() {
 				value={npubInput}
 				onChange={(e) => setNpubInput(e.target.value)}
 			/>
-			<button onClick={handleWhitelistClick}>Whitelist npub</button>
+			<button type="button" onClick={handleWhitelistClick}>
+				Whitelist npub
+			</button>
 			<h3>whitelisted pubkeys</h3>
 			<ul>
 				{whitelist
-					.sort((a, b) => ('' + a.pubkey).localeCompare(b.pubkey))
+					.sort((a, b) => `${''}${a.pubkey}`.localeCompare(b.pubkey))
 					.map((wl) => {
 						return (
 							<li className="whitelist" key={wl.pubkey}>
@@ -52,6 +57,7 @@ export default function Pubkeys() {
 								<span
 									className="whitelist-remove"
 									onClick={() => handleBanClick(wl.pubkey)}
+									onKeyDown={() => handleBanClick(wl.pubkey)}
 								>
 									❌
 								</span>
