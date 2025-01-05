@@ -5,22 +5,40 @@ export function IPs() {
 	const [banlist, setBanlist] = useState<IpBanlist[]>([]);
 	const [ipInput, setIpInput] = useState('');
 	const [reasonInput, setReasonInput] = useState('');
+	const [errors, setErrors] = useState<string[]>([]);
 
 	useEffect(() => {
 		const loadData = async () => {
-			setBanlist(await loadBanlist());
+			const response = await loadBanlist();
+			if (response.error !== null) {
+				setErrors([response.error]);
+				return;
+			}
+			setBanlist(response.result);
 		};
 		loadData();
 	}, []);
 
 	const handleBlockIpClick = async () => {
-		const success = await banIp(ipInput, reasonInput);
-		if (success) setBanlist([...banlist, { ip: ipInput, reason: reasonInput }]);
+		const response = await banIp(ipInput, reasonInput);
+		if (response.error !== null) {
+			setErrors([response.error]);
+			return;
+		}
+		setBanlist((prevState) => [
+			...prevState,
+			{ ip: ipInput, reason: reasonInput },
+		]);
 	};
 
 	const handleUnblockClick = async (ip: string) => {
-		const success = await unblockIp(ip);
-		if (success) setBanlist(banlist.filter((bl) => bl.ip !== ip));
+		const response = await unblockIp(ip);
+		if (response.error !== null) {
+			setErrors([response.error]);
+			return;
+		}
+
+		setBanlist(banlist.filter((bl) => bl.ip !== ip));
 	};
 
 	return (
@@ -40,6 +58,11 @@ export function IPs() {
 			<button type="button" onClick={handleBlockIpClick}>
 				Block IP
 			</button>
+			{errors.map((error) => (
+				<p key={error} style={{ color: 'red' }}>
+					{error}
+				</p>
+			))}
 			<h3>Banned IPs</h3>
 			<ul>
 				{banlist.map((bl) => {
