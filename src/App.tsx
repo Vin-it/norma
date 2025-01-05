@@ -18,7 +18,7 @@ const App = () => {
 					<div className="navbar">
 						<div className="navbar-left">
 							<h2 className="title">Norma</h2>
-							<h6>A Nostr Management Panel</h6>
+							<h6>A Nostr Relay Management Panel</h6>
 						</div>
 						{isStoreInit ? (
 							<div className="navbar-right">

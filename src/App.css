@@ -36,7 +36,7 @@ h2 {
 
 .navbar-right {
   display: flex;
-  gap: 8px;
+  gap: 16px;
   flex-wrap: nowrap;
 }
 
