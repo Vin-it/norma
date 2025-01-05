@@ -28,7 +28,6 @@ export default function Kinds() {
 
 	return (
 		<>
-			<h3>Allowed Kinds</h3>
 			<input
 				type="number"
 				placeholder="kind"
@@ -38,6 +37,7 @@ export default function Kinds() {
 			<button type="button" onClick={handleAllowClick}>
 				Whitelist kind
 			</button>
+			<h3>Allowed Kinds</h3>
 			<ul>
 				{allowedKinds.sort().map((k) => (
 					<li key={k}>

@@ -13,28 +13,30 @@ const App = () => {
 
 	return (
 		<UrlContext.Provider value={{ api, handleSetApi, resetStore }}>
-			<div className="content">
-				<div className="navbar">
-					<div className="navbar-left">
-						<h2 className="title">Norma</h2>
-						<h6>A Nostr Management Panel</h6>
-					</div>
-					{isStoreInit ? (
-						<div className="navbar-right">
-							<Link to="/">Home</Link>
-							<Link to="/pubkeys">Pubkeys</Link>
-							<Link to="/ips">IPs</Link>
-							<Link to="/kinds">Kinds</Link>
-							<Link to="/blossom">Blossom</Link>
+			<div className="wrapper">
+				<div className="container">
+					<div className="navbar">
+						<div className="navbar-left">
+							<h2 className="title">Norma</h2>
+							<h6>A Nostr Management Panel</h6>
 						</div>
-					) : null}
-				</div>
+						{isStoreInit ? (
+							<div className="navbar-right">
+								<Link to="/">Home</Link>
+								<Link to="/pubkeys">Pubkeys</Link>
+								<Link to="/ips">IPs</Link>
+								<Link to="/kinds">Kinds</Link>
+								<Link to="/blossom">Blossom</Link>
+							</div>
+						) : null}
+					</div>
 
-				{isStoreInit ? (
-					<Outlet />
-				) : (
-					<InitializeApp handleSetApi={handleSetApi} />
-				)}
+					{isStoreInit ? (
+						<Outlet />
+					) : (
+						<InitializeApp handleSetApi={handleSetApi} />
+					)}
+				</div>
 			</div>
 		</UrlContext.Provider>
 	);

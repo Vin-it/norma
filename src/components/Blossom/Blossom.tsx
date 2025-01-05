@@ -82,7 +82,7 @@ export function Blossom() {
 
 	return (
 		<>
-			<h1>Blossom</h1>
+			<h3>Blossom</h3>
 			<input type="file" onChange={handleFileChange} />
 			<button type="button" onClick={handleUpload}>
 				Upload
