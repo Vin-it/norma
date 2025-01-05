@@ -1,7 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
-import { loadMetadata, loadSupportedMethods } from './api';
-import { makeReq } from '../../utils/api.utils';
+import {
+	handleDescriptionUpdate,
+	handleIconUpdate,
+	handleRelayNameUpdate,
+	loadMetadata,
+	loadSupportedMethods,
+} from './api';
 import { useUrlContext } from '../../UrlContext';
+import type { Nip86Response } from '../../utils/api.utils';
+import { Errors } from '../Errors/Errors';
 
 interface Metadata {
 	name: string;
@@ -21,8 +28,11 @@ export default function Metadata() {
 	const { api, handleSetApi, resetStore } = useUrlContext();
 
 	const loadAndSetSupportedMethods = useCallback(async () => {
-		const supportedMethods = await loadSupportedMethods();
-		setSupportedMethods(supportedMethods);
+		const response = await loadSupportedMethods();
+		if (response.error !== null) {
+			return;
+		}
+		setSupportedMethods(response.result);
 	}, []);
 	const loadAndSetMetadata = useCallback(async () => {
 		const metadata = await loadMetadata();
@@ -34,48 +44,19 @@ export default function Metadata() {
 		loadAndSetMetadata();
 	}, [loadAndSetMetadata, loadAndSetSupportedMethods]);
 
-	const handleRelayNameUpdate = async (name: string) => {
-		const res = await makeReq({ method: 'changerelayname', params: [name] });
-		if (res.ok) {
-			const result = await res.json();
-			if (result.error) return false;
-			return true;
-		}
-		return false;
-	};
-
-	const handleDescriptionUpdate = async (description: string) => {
-		const res = await makeReq({
-			method: 'changerelaydescription',
-			params: [description],
-		});
-		if (res.ok) {
-			const result = await res.json();
-			if (result.error) return false;
-			return true;
-		}
-		return false;
-	};
-
-	const handleIconUpdate = async (iconUrl: string) => {
-		const res = await makeReq({ method: 'changerelayicon', params: [iconUrl] });
-		if (res.ok) {
-			const result = await res.json();
-			if (result.error) return false;
-			return true;
-		}
-		return false;
-	};
-
-	const handleBaseUrlUpdate = async (baseUrl: string) => {
+	const handleBaseUrlUpdate = async (
+		baseUrl: string,
+	): Promise<{ error: null; result: true }> => {
 		handleSetApi(baseUrl);
 		await loadSupportedMethods();
-		return true;
+		return { error: null, result: true };
 	};
-	const handleEndpointUpdate = async (endpoint: string) => {
+	const handleEndpointUpdate = async (
+		endpoint: string,
+	): Promise<{ error: null; result: true }> => {
 		handleSetApi(undefined, endpoint);
 		await loadSupportedMethods();
-		return true;
+		return { error: null, result: true };
 	};
 
 	return (
@@ -139,12 +120,13 @@ export default function Metadata() {
 interface EditableInputProps {
 	display: string;
 	value: string;
-	func: (value: string) => Promise<boolean>;
+	func: (value: string) => Promise<Nip86Response<true>>;
 }
 
 function EditableInput({ display, value, func }: EditableInputProps) {
 	const [editing, setEditing] = useState<boolean>(false);
 	const [inputValue, setInputValue] = useState<string>(value);
+	const [error, setError] = useState<string>('');
 
 	useEffect(() => {
 		if (!inputValue) setInputValue(value);
@@ -152,8 +134,12 @@ function EditableInput({ display, value, func }: EditableInputProps) {
 
 	const handleSaveClick = async () => {
 		setEditing(false);
-		const result = await func(inputValue);
-		if (!result) setInputValue(value);
+		const response = await func(inputValue);
+		if (response.error) {
+			setInputValue(value);
+			setError(response.error);
+			return;
+		}
 	};
 
 	return (
@@ -184,6 +170,7 @@ function EditableInput({ display, value, func }: EditableInputProps) {
 							inputValue
 						)}
 					</span>
+					<Errors errors={[error]} />
 					<span
 						style={{ cursor: 'pointer' }}
 						onClick={() => setEditing((prevState) => !prevState)}

@@ -1,11 +1,11 @@
 export function Errors({ errors }: { errors: string[] }) {
 	return (
-		<div>
+		<span>
 			{errors.map((e) => (
-				<p key={e} style={{ color: 'red' }}>
-					{e}
-				</p>
+				<span key={e} style={{ color: 'red' }}>
+					<b>{e}</b>
+				</span>
 			))}
-		</div>
+		</span>
 	);
 }
