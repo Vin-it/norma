@@ -23,6 +23,7 @@ const App = () => {
 						<div className="navbar-right">
 							<Link to="/">Home</Link>
 							<Link to="/pubkeys">Pubkeys</Link>
+							<Link to="/ips">IPs</Link>
 							<Link to="/kinds">Kinds</Link>
 							<Link to="/blossom">Blossom</Link>
 						</div>

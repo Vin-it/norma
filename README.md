@@ -9,6 +9,9 @@
   - ✅ allowkind
   - ✅ disallowkind
   - ✅ listallowedkinds
+  - ✅ blockip
+  - ✅ unblockip
+  - ✅ listblockedips
   - ✅ changerelayname
   - ✅ changerelaydescription
   - ✅ changerelayicon

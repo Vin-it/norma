@@ -5,6 +5,7 @@ import Pubkeys from './components/Pubkeys/Pubkeys';
 import Kinds from './components/Kinds/Kinds';
 import Metadata from './components/Metadata/Metadata';
 import { Blossom } from './components/Blossom/Blossom';
+import { IPs } from './components/IPs/IP';
 
 document.onreadystatechange = () => {
 	if (document.readyState === 'complete') {
@@ -19,6 +20,7 @@ document.onreadystatechange = () => {
 							<Route path="/pubkeys" element={<Pubkeys />} />
 							<Route path="/kinds" element={<Kinds />} />
 							<Route path="/blossom" element={<Blossom />} />
+							<Route path="/ips" element={<IPs />} />
 						</Route>
 					</Routes>
 				</BrowserRouter>,
