@@ -110,10 +110,7 @@ function Descriptor({ descriptor, deleteFunc }: DescriptorProps) {
 		<div className="descriptor" key={descriptor.sha256}>
 			{isImageUrl(descriptor.url) ? (
 				// biome-ignore lint/a11y/useAltText: <explanation>
-				<img
-					className="blossom-image-thumbnail"
-					src={descriptor.url.replace('https://', 'http://')}
-				/>
+				<img className="blossom-image-thumbnail" src={descriptor.url} />
 			) : (
 				<a href={descriptor.url}>{descriptor.url}</a>
 			)}
