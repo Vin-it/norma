@@ -81,7 +81,8 @@ function InitializeApp({
 				type="button"
 				onClick={() => {
 					if (!baseUrl || !endpoint) return;
-					handleSetApi(baseUrl, endpoint);
+					const sanitizedBaseUrl = baseUrl.replace(/\/+$/, '');
+					handleSetApi(sanitizedBaseUrl, endpoint);
 				}}
 			>
 				Save
