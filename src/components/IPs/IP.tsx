@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { unblockIp, banIp, type IpBanlist, loadBanlist } from './api';
+import { Errors } from '../Errors/Errors';
 
 export function IPs() {
 	const [banlist, setBanlist] = useState<IpBanlist[]>([]);
@@ -58,11 +59,7 @@ export function IPs() {
 			<button type="button" onClick={handleBlockIpClick}>
 				Block IP
 			</button>
-			{errors.map((error) => (
-				<p key={error} style={{ color: 'red' }}>
-					{error}
-				</p>
-			))}
+			<Errors errors={errors} />
 			<h3>Banned IPs</h3>
 			<ul>
 				{banlist.map((bl) => {
