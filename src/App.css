@@ -3,7 +3,8 @@
   overflow: hidden;
   position: relative;
   width: 100%;
-  color: #1f0c0c;
+  color: #606c76;
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
 }
 
 .wrapper .container {
@@ -67,7 +68,7 @@ h2 {
 
 a {
   text-decoration: none;
-  color: #1f0c0c;
+  color: #606c76;
 }
 
 .metadata {
