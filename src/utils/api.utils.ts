@@ -13,7 +13,7 @@ export async function makeReq(payload: Record<string, unknown>) {
 	});
 }
 
-type Nip86Response<T> =
+export type Nip86Response<T> =
 	| { result: T; error: null }
 	| { result: null; error: string };
 export async function handleResponse<T>(

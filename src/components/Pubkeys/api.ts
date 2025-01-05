@@ -1,4 +1,8 @@
-import { makeReq } from '../../utils/api.utils';
+import {
+	handleResponse,
+	makeReq,
+	type Nip86Response,
+} from '../../utils/api.utils';
 import { npubToHex } from '../../utils/general.utils';
 
 export interface PubKeyReason {
@@ -6,45 +10,36 @@ export interface PubKeyReason {
 	reason: string;
 }
 
-export async function loadWhitelist(): Promise<PubKeyReason[]> {
+export async function loadWhitelist(): Promise<Nip86Response<PubKeyReason[]>> {
 	const payload = { method: 'listallowedpubkeys', params: [] };
 
 	const res = await makeReq(payload);
 
-	if (res.ok) {
-		const data = await res.json();
-		return data.result;
-	}
-	return [];
+	return handleResponse<PubKeyReason[]>(res);
 }
 
 export async function whitelistPubkey(
 	npub: string,
 	reason?: string,
-): Promise<boolean> {
+): Promise<Nip86Response<true>> {
 	const payload = {
 		method: 'allowpubkey',
 		params: [npubToHex(npub), reason ?? 'no reason provided'],
 	};
 
 	const res = await makeReq(payload);
-	if (res.ok) {
-		const data = await res.json();
-		return data.result;
-	}
-	return false;
+	return handleResponse<true>(res);
 }
 
-export async function banPubkey(pubkey: string, reason?: string) {
+export async function banPubkey(
+	pubkey: string,
+	reason?: string,
+): Promise<Nip86Response<true>> {
 	const payload = {
 		method: 'banpubkey',
 		params: [pubkey, reason ?? 'no reason provided'],
 	};
 
 	const res = await makeReq(payload);
-	if (res.ok) {
-		const data = await res.json();
-		return data.result;
-	}
-	return false;
+	return handleResponse<true>(res);
 }
