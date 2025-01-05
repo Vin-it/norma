@@ -1,4 +1,4 @@
-import { makeReq } from '../../utils/api.utils';
+import { handleResponse, makeReq } from '../../utils/api.utils';
 import { UrlStore } from '../../utils/url.store';
 
 export async function loadMetadata() {
@@ -18,11 +18,23 @@ export async function loadMetadata() {
 
 export async function loadSupportedMethods() {
 	const res = await makeReq({ method: 'supportedmethods', params: [] });
-	if (res.ok) {
-		const data = await res.json();
-		if (data.error) return [];
-		return data.result;
-	}
-
-	return [];
+	return handleResponse<string[]>(res);
 }
+
+export const handleRelayNameUpdate = async (name: string) => {
+	const res = await makeReq({ method: 'changerelayname', params: [name] });
+	return handleResponse<true>(res);
+};
+
+export const handleDescriptionUpdate = async (description: string) => {
+	const res = await makeReq({
+		method: 'changerelaydescription',
+		params: [description],
+	});
+	return handleResponse<true>(res);
+};
+
+export const handleIconUpdate = async (iconUrl: string) => {
+	const res = await makeReq({ method: 'changerelayicon', params: [iconUrl] });
+	return handleResponse<true>(res);
+};

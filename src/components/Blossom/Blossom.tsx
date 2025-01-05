@@ -41,7 +41,11 @@ export function Blossom() {
 	};
 
 	const loadData = useCallback(async () => {
-		const pubkeys = await loadWhitelist();
+		const response = await loadWhitelist();
+		if (response.error !== null) {
+			return;
+		}
+		const pubkeys = response.result;
 		const hash = await fromEvent();
 		const descriptors: Descriptor[] = [];
 

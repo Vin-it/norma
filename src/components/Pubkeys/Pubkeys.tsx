@@ -6,33 +6,43 @@ import {
 	whitelistPubkey,
 } from './api';
 import { npubToHex } from '../../utils/general.utils';
+import { Errors } from '../Errors/Errors';
 
 export default function Pubkeys() {
 	const [whitelist, setWhitelist] = useState<PubKeyReason[]>([]);
 	const [npubInput, setNpubInput] = useState('');
+	const [errors, setErrors] = useState<string[]>([]);
 
 	useEffect(() => {
 		const loadData = async () => {
-			const whitelist = await loadWhitelist();
-			setWhitelist(whitelist);
+			const response = await loadWhitelist();
+			if (response.error !== null) {
+				setErrors([response.error]);
+				return;
+			}
+			setWhitelist(response.result);
 		};
 		loadData();
 	}, []);
 
 	const handleWhitelistClick = async () => {
-		const result = await whitelistPubkey(npubInput);
-		if (result) {
-			setNpubInput('');
-			setWhitelist([
-				...whitelist,
-				{ pubkey: npubToHex(npubInput), reason: '' },
-			]);
+		const response = await whitelistPubkey(npubInput);
+		if (response.error !== null) {
+			setErrors([response.error]);
+			return;
 		}
+
+		setNpubInput('');
+		setWhitelist([...whitelist, { pubkey: npubToHex(npubInput), reason: '' }]);
 	};
 
 	const handleBanClick = async (pubkey: string) => {
-		const result = await banPubkey(pubkey);
-		if (result) setWhitelist(whitelist.filter((wl) => wl.pubkey !== pubkey));
+		const response = await banPubkey(pubkey);
+		if (response.error !== null) {
+			setErrors([response.error]);
+			return;
+		}
+		setWhitelist(whitelist.filter((wl) => wl.pubkey !== pubkey));
 	};
 
 	return (
@@ -46,6 +56,7 @@ export default function Pubkeys() {
 			<button type="button" onClick={handleWhitelistClick}>
 				Whitelist npub
 			</button>
+			<Errors errors={errors} />
 			<h3>whitelisted pubkeys</h3>
 			<ul>
 				{whitelist
