@@ -11,6 +11,7 @@ import { Errors } from '../Errors/Errors';
 export default function Pubkeys() {
 	const [allowedPubkeys, setAllowedPubkeys] = useState<PubKeyReason[]>([]);
 	const [npubInput, setNpubInput] = useState('');
+	const [reasonInput, setReasonInput] = useState('');
 	const [errors, setErrors] = useState<string[]>([]);
 
 	useEffect(() => {
@@ -26,7 +27,7 @@ export default function Pubkeys() {
 	}, []);
 
 	const handleWhitelistClick = async () => {
-		const response = await allowPubkey(npubInput);
+		const response = await allowPubkey(npubInput, reasonInput);
 		if (response.error !== null) {
 			setErrors([response.error]);
 			return;
@@ -35,7 +36,7 @@ export default function Pubkeys() {
 		setNpubInput('');
 		setAllowedPubkeys([
 			...allowedPubkeys,
-			{ pubkey: npubToHex(npubInput), reason: '' },
+			{ pubkey: npubToHex(npubInput), reason: reasonInput },
 		]);
 	};
 
@@ -56,6 +57,12 @@ export default function Pubkeys() {
 				value={npubInput}
 				onChange={(e) => setNpubInput(e.target.value)}
 			/>
+			<input
+				type="text"
+				placeholder="reason"
+				value={reasonInput}
+				onChange={(e) => setReasonInput(e.target.value)}
+			/>
 			<button type="button" onClick={handleWhitelistClick}>
 				Whitelist npub
 			</button>
@@ -67,7 +74,7 @@ export default function Pubkeys() {
 					.map((ap) => {
 						return (
 							<li className="whitelist" key={ap.pubkey}>
-								{ap.pubkey}
+								pubkey: {ap.pubkey} / reason: {ap.reason}
 								<span
 									className="whitelist-remove"
 									onClick={() => handleBanClick(ap.pubkey)}
