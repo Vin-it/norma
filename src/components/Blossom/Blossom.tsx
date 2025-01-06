@@ -1,6 +1,6 @@
 import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { fromEvent, fromHash, fromPayload } from '../../utils/blossom.utils';
-import { loadWhitelist } from '../Pubkeys/api';
+import { listAllowedPubkeys } from '../Pubkeys/api';
 import { UrlStore } from '../../utils/url.store';
 
 interface Descriptor {
@@ -41,7 +41,7 @@ export function Blossom() {
 	};
 
 	const loadData = useCallback(async () => {
-		const response = await loadWhitelist();
+		const response = await listAllowedPubkeys();
 		if (response.error !== null) {
 			return;
 		}
@@ -114,7 +114,10 @@ function Descriptor({ descriptor, deleteFunc }: DescriptorProps) {
 		<div className="descriptor" key={descriptor.sha256}>
 			{isImageUrl(descriptor.url) ? (
 				// biome-ignore lint/a11y/useAltText: <explanation>
-				<img className="blossom-image-thumbnail" src={descriptor.url} />
+				<img
+					className="blossom-image-thumbnail"
+					src={descriptor.url.replace('https://', 'http://')}
+				/>
 			) : (
 				<a href={descriptor.url}>{descriptor.url}</a>
 			)}

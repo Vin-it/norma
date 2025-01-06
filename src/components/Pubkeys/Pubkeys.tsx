@@ -2,38 +2,41 @@ import { useEffect, useState } from 'react';
 import {
 	type PubKeyReason,
 	banPubkey,
-	loadWhitelist,
-	whitelistPubkey,
+	listAllowedPubkeys,
+	allowPubkey,
 } from './api';
 import { npubToHex } from '../../utils/general.utils';
 import { Errors } from '../Errors/Errors';
 
 export default function Pubkeys() {
-	const [whitelist, setWhitelist] = useState<PubKeyReason[]>([]);
+	const [allowedPubkeys, setAllowedPubkeys] = useState<PubKeyReason[]>([]);
 	const [npubInput, setNpubInput] = useState('');
 	const [errors, setErrors] = useState<string[]>([]);
 
 	useEffect(() => {
 		const loadData = async () => {
-			const response = await loadWhitelist();
+			const response = await listAllowedPubkeys();
 			if (response.error !== null) {
 				setErrors([response.error]);
 				return;
 			}
-			setWhitelist(response.result);
+			setAllowedPubkeys(response.result);
 		};
 		loadData();
 	}, []);
 
 	const handleWhitelistClick = async () => {
-		const response = await whitelistPubkey(npubInput);
+		const response = await allowPubkey(npubInput);
 		if (response.error !== null) {
 			setErrors([response.error]);
 			return;
 		}
 
 		setNpubInput('');
-		setWhitelist([...whitelist, { pubkey: npubToHex(npubInput), reason: '' }]);
+		setAllowedPubkeys([
+			...allowedPubkeys,
+			{ pubkey: npubToHex(npubInput), reason: '' },
+		]);
 	};
 
 	const handleBanClick = async (pubkey: string) => {
@@ -42,7 +45,7 @@ export default function Pubkeys() {
 			setErrors([response.error]);
 			return;
 		}
-		setWhitelist(whitelist.filter((wl) => wl.pubkey !== pubkey));
+		setAllowedPubkeys(allowedPubkeys.filter((wl) => wl.pubkey !== pubkey));
 	};
 
 	return (
@@ -59,16 +62,16 @@ export default function Pubkeys() {
 			<Errors errors={errors} />
 			<h3>whitelisted pubkeys</h3>
 			<ul>
-				{whitelist
+				{allowedPubkeys
 					.sort((a, b) => `${''}${a.pubkey}`.localeCompare(b.pubkey))
-					.map((wl) => {
+					.map((ap) => {
 						return (
-							<li className="whitelist" key={wl.pubkey}>
-								{wl.pubkey}
+							<li className="whitelist" key={ap.pubkey}>
+								{ap.pubkey}
 								<span
 									className="whitelist-remove"
-									onClick={() => handleBanClick(wl.pubkey)}
-									onKeyDown={() => handleBanClick(wl.pubkey)}
+									onClick={() => handleBanClick(ap.pubkey)}
+									onKeyDown={() => handleBanClick(ap.pubkey)}
 								>
 									❌
 								</span>
