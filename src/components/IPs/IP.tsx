@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { unblockIp, banIp, type IpBanlist, loadBanlist } from './api';
+import { unblockIp, blockIp, type IpBanlist, listBlockedIps } from './api';
 import { Errors } from '../Errors/Errors';
 
 export function IPs() {
@@ -10,7 +10,7 @@ export function IPs() {
 
 	useEffect(() => {
 		const loadData = async () => {
-			const response = await loadBanlist();
+			const response = await listBlockedIps();
 			if (response.error !== null) {
 				setErrors([response.error]);
 				return;
@@ -21,7 +21,7 @@ export function IPs() {
 	}, []);
 
 	const handleBlockIpClick = async () => {
-		const response = await banIp(ipInput, reasonInput);
+		const response = await blockIp(ipInput, reasonInput);
 		if (response.error !== null) {
 			setErrors([response.error]);
 			return;

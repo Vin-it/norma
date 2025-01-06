@@ -10,7 +10,9 @@ export interface PubKeyReason {
 	reason: string;
 }
 
-export async function loadWhitelist(): Promise<Nip86Response<PubKeyReason[]>> {
+export async function listAllowedPubkeys(): Promise<
+	Nip86Response<PubKeyReason[]>
+> {
 	const payload = { method: 'listallowedpubkeys', params: [] };
 
 	const res = await makeReq(payload);
@@ -18,7 +20,7 @@ export async function loadWhitelist(): Promise<Nip86Response<PubKeyReason[]>> {
 	return handleResponse<PubKeyReason[]>(res);
 }
 
-export async function whitelistPubkey(
+export async function allowPubkey(
 	npub: string,
 	reason?: string,
 ): Promise<Nip86Response<true>> {

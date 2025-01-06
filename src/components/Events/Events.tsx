@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { allowEvent, banEvent, type IDReason, loadBanlistEvents } from './api';
+import { allowEvent, banEvent, type IDReason, listBannedEvents } from './api';
 import { Errors } from '../Errors/Errors';
 
 export function Events() {
@@ -10,7 +10,7 @@ export function Events() {
 
 	useEffect(() => {
 		const loadData = async () => {
-			const response = await loadBanlistEvents();
+			const response = await listBannedEvents();
 			if (response.error !== null) {
 				setErrors([response.error]);
 				return;

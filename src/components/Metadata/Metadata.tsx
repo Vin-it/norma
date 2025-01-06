@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-	handleDescriptionUpdate,
-	handleIconUpdate,
-	handleRelayNameUpdate,
+	changeRelayDescription,
+	changeRelayIcon,
+	changeRelayName,
 	loadMetadata,
 	loadSupportedMethods,
 } from './api';
@@ -65,17 +65,17 @@ export default function Metadata() {
 				<EditableInput
 					display="Name"
 					value={metadata.name}
-					func={handleRelayNameUpdate}
+					func={changeRelayName}
 				/>
 				<EditableInput
 					display="Description"
 					value={metadata.description}
-					func={handleDescriptionUpdate}
+					func={changeRelayDescription}
 				/>
 				<EditableInput
 					display="Icon Url"
 					value={metadata.icon}
-					func={handleIconUpdate}
+					func={changeRelayIcon}
 				/>
 				<EditableInput
 					display="Relay Management API URL"
