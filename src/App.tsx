@@ -23,6 +23,7 @@ const App = () => {
 						{isStoreInit ? (
 							<div className="navbar-right">
 								<Link to="/">Home</Link>
+								<Link to="/events">Events</Link>
 								<Link to="/pubkeys">Pubkeys</Link>
 								<Link to="/ips">IPs</Link>
 								<Link to="/kinds">Kinds</Link>
