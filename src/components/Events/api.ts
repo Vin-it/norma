@@ -5,7 +5,7 @@ export interface IDReason {
 	reason: string;
 }
 
-export async function loadBanlistEvents() {
+export async function listBannedEvents() {
 	const payload = { method: 'listbannedevents', params: [] };
 	const res = await makeReq(payload);
 	return handleResponse<IDReason[]>(res);
