@@ -21,12 +21,12 @@ export async function loadSupportedMethods() {
 	return handleResponse<string[]>(res);
 }
 
-export const handleRelayNameUpdate = async (name: string) => {
+export const changeRelayName = async (name: string) => {
 	const res = await makeReq({ method: 'changerelayname', params: [name] });
 	return handleResponse<true>(res);
 };
 
-export const handleDescriptionUpdate = async (description: string) => {
+export const changeRelayDescription = async (description: string) => {
 	const res = await makeReq({
 		method: 'changerelaydescription',
 		params: [description],
@@ -34,7 +34,7 @@ export const handleDescriptionUpdate = async (description: string) => {
 	return handleResponse<true>(res);
 };
 
-export const handleIconUpdate = async (iconUrl: string) => {
+export const changeRelayIcon = async (iconUrl: string) => {
 	const res = await makeReq({ method: 'changerelayicon', params: [iconUrl] });
 	return handleResponse<true>(res);
 };
