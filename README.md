@@ -12,6 +12,9 @@
   - ✅ blockip
   - ✅ unblockip
   - ✅ listblockedips
+  - ✅ allowevent
+  - ✅ banevent
+  - ✅ listbannedevents
   - ✅ changerelayname
   - ✅ changerelaydescription
   - ✅ changerelayicon

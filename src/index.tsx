@@ -6,6 +6,7 @@ import Kinds from './components/Kinds/Kinds';
 import Metadata from './components/Metadata/Metadata';
 import { Blossom } from './components/Blossom/Blossom';
 import { IPs } from './components/IPs/IP';
+import { Events } from './components/Events/Events';
 
 document.onreadystatechange = () => {
 	if (document.readyState === 'complete') {
@@ -17,6 +18,7 @@ document.onreadystatechange = () => {
 					<Routes>
 						<Route element={<App />}>
 							<Route path="/" element={<Metadata />} />
+							<Route path="/events" element={<Events />} />
 							<Route path="/pubkeys" element={<Pubkeys />} />
 							<Route path="/kinds" element={<Kinds />} />
 							<Route path="/blossom" element={<Blossom />} />
