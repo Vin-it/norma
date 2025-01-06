@@ -1,6 +1,6 @@
 import { handleResponse, makeReq } from '../../utils/api.utils';
 
-export async function loadAllowedKinds() {
+export async function listAllowedKinds() {
 	const payload = { method: 'listallowedkinds', params: [] };
 	const res = await makeReq(payload);
 	return handleResponse<number[]>(res);

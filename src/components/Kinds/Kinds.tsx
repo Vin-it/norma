@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { allowKind, disallowKind, loadAllowedKinds } from './api';
+import { allowKind, disallowKind, listAllowedKinds } from './api';
 import { Errors } from '../Errors/Errors';
 
 export default function Kinds() {
@@ -9,7 +9,7 @@ export default function Kinds() {
 
 	useEffect(() => {
 		const loadData = async () => {
-			const response = await loadAllowedKinds();
+			const response = await listAllowedKinds();
 			if (response.error !== null) {
 				setErrors([response.error]);
 				return;
