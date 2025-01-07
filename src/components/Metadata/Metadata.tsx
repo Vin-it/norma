@@ -73,6 +73,7 @@ export default function Metadata() {
 					func={changeRelayDescription}
 				/>
 				<EditableInput
+					style={{ overflowWrap: 'anywhere' }}
 					display="Icon Url"
 					value={metadata.icon}
 					func={changeRelayIcon}
@@ -121,9 +122,10 @@ interface EditableInputProps {
 	display: string;
 	value: string;
 	func: (value: string) => Promise<Nip86Response<true>>;
+	style?: React.CSSProperties;
 }
 
-function EditableInput({ display, value, func }: EditableInputProps) {
+function EditableInput({ display, value, func, style }: EditableInputProps) {
 	const [editing, setEditing] = useState<boolean>(false);
 	const [inputValue, setInputValue] = useState<string>(value);
 	const [error, setError] = useState<string>('');
@@ -143,7 +145,7 @@ function EditableInput({ display, value, func }: EditableInputProps) {
 	};
 
 	return (
-		<div style={{ display: 'flex', gap: '10px' }}>
+		<div style={{ display: 'flex', gap: '10px', ...(style ?? {}) }}>
 			{editing ? (
 				<>
 					<input
