@@ -25,11 +25,13 @@ export default function Metadata() {
 		icon: '',
 	});
 	const [supportedMethods, setSupportedMethods] = useState<string[]>([]);
+	const [error, setError] = useState<string>('');
 	const { api, handleSetApi, resetStore } = useUrlContext();
 
 	const loadAndSetSupportedMethods = useCallback(async () => {
 		const response = await loadSupportedMethods();
 		if (response.error !== null) {
+			setError(response.error);
 			return;
 		}
 		setSupportedMethods(response.result);
@@ -95,12 +97,16 @@ export default function Metadata() {
 					<span>
 						<b>Supported Methods:</b>
 					</span>
-					{supportedMethods.map((s, idx) => (
-						<span key={s}>
-							{' '}
-							✅ {s} {idx === supportedMethods.length ? ',' : ''}
-						</span>
-					))}
+					{supportedMethods.length > 0
+						? supportedMethods.map((s, idx) => (
+								<span key={s}>
+									{' '}
+									✅ {s} {idx === supportedMethods.length ? ',' : ''}
+								</span>
+							))
+						: ' Server returned empty list for supported methods'}
+					<br />
+					<Errors errors={[error]} />
 				</div>
 				<button
 					type="button"
