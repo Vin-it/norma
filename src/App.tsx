@@ -18,7 +18,9 @@ const App = () => {
 					<div className="navbar">
 						<div className="navbar-left">
 							<h2 className="title">Norma</h2>
-							<h6>A Nostr Relay Management Panel</h6>
+							<h6 className="hide-subtext-mobile">
+								A Nostr Relay Management Panel
+							</h6>
 						</div>
 						{isStoreInit ? (
 							<div className="navbar-right">
@@ -33,7 +35,9 @@ const App = () => {
 					</div>
 
 					{isStoreInit ? (
-						<Outlet />
+						<div className="content">
+							<Outlet />
+						</div>
 					) : (
 						<InitializeApp handleSetApi={handleSetApi} />
 					)}

@@ -48,9 +48,13 @@ h2 {
   white-space: nowrap;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 795px) {
+  .hide-subtext-mobile {
+    display: none;
+  }
   .navbar {
     flex-wrap: wrap;
+    gap: 0px;
   }
 
   h6 {
@@ -63,6 +67,10 @@ h2 {
 
   .metadata {
     margin-top: 20px;
+  }
+
+  .content {
+    margin-top: 30px;
   }
 }
 
