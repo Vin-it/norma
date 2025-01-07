@@ -45,3 +45,9 @@ export async function banPubkey(
 	const res = await makeReq(payload);
 	return handleResponse<true>(res);
 }
+
+export async function listBannedPubkeys() {
+	const payload = { method: 'listbannedpubkeys', params: [] };
+	const res = await makeReq(payload);
+	return handleResponse<PubKeyReason[]>(res);
+}
