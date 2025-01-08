@@ -67,18 +67,27 @@ export default function Metadata() {
 				<EditableInput
 					display="Name"
 					value={metadata.name}
-					func={changeRelayName}
+					func={async (name: string) => {
+						setMetadata((prevState) => ({ ...prevState, name }));
+						return changeRelayName(name);
+					}}
 				/>
 				<EditableInput
 					display="Description"
 					value={metadata.description}
-					func={changeRelayDescription}
+					func={async (desc: string) => {
+						setMetadata((prevState) => ({ ...prevState, description: desc }));
+						return changeRelayDescription(desc);
+					}}
 				/>
 				<EditableInput
 					style={{ overflowWrap: 'anywhere' }}
 					display="Icon Url"
 					value={metadata.icon}
-					func={changeRelayIcon}
+					func={async (url: string) => {
+						setMetadata((prevState) => ({ ...prevState, icon: url }));
+						return changeRelayIcon(url);
+					}}
 				/>
 				<EditableInput
 					display="Relay Management API URL"
@@ -137,11 +146,15 @@ function EditableInput({ display, value, func, style }: EditableInputProps) {
 	const [error, setError] = useState<string>('');
 
 	useEffect(() => {
-		if (!inputValue) setInputValue(value);
-	}, [value, inputValue]);
+		setInputValue(value);
+	}, [value]);
 
 	const handleSaveClick = async () => {
 		setEditing(false);
+		if (!inputValue) {
+			setInputValue(value);
+			return;
+		}
 		const response = await func(inputValue);
 		if (response.error) {
 			setInputValue(value);
