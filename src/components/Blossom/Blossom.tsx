@@ -1,7 +1,6 @@
 import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
-import { fromEvent, fromHash, fromPayload } from '../../utils/blossom.utils';
 import { listAllowedPubkeys } from '../Pubkeys/api';
-import { UrlStore } from '../../utils/url.store';
+import { deleteBlossom, listBlossom, uploadBlossom } from './api';
 
 interface Descriptor {
 	url: string;
@@ -20,22 +19,10 @@ export function Blossom() {
 
 	const handleUpload = async () => {
 		if (!file) return;
-
-		const hash = await fromPayload(file);
-		const response = await fetch(`${UrlStore.getBaseUrl()}/upload`, {
-			method: 'PUT',
-			headers: {
-				'content-type': file.type,
-				'content-length': `${file.size}`,
-				Authorization: `Nostr ${hash}`,
-			},
-			body: file,
-		});
-
+		const response = await uploadBlossom(file);
 		if (response.ok) {
 			const result = await response.json();
 			if (result) {
-				console.log(result);
 				loadData();
 			}
 		}
@@ -47,19 +34,10 @@ export function Blossom() {
 			return;
 		}
 		const pubkeys = response.result;
-		const hash = await fromEvent();
 		const descriptors: Descriptor[] = [];
 
 		for (let i = 0; i < pubkeys.length; i++) {
-			const response = await fetch(
-				`${UrlStore.getBaseUrl()}/list/${pubkeys[i].pubkey}`,
-				{
-					method: 'GET',
-					headers: {
-						Authorization: `Nostr ${hash}`,
-					},
-				},
-			);
+			const response = await listBlossom(pubkeys[i].pubkey);
 			if (response.ok) {
 				const descriptorList = (await response.json()) as Descriptor[];
 				descriptors.push(...descriptorList);
@@ -69,13 +47,7 @@ export function Blossom() {
 	}, []);
 
 	const deleteBlob = async (hash: string) => {
-		const authToken = await fromHash(hash);
-
-		const response = await fetch(`${UrlStore.getBaseUrl()}/${hash}`, {
-			method: 'DELETE',
-			headers: { Authorization: `Nostr ${authToken}` },
-		});
-
+		const response = await deleteBlossom(hash);
 		if (response.ok) {
 			loadData();
 		}
@@ -115,10 +87,7 @@ function Descriptor({ descriptor, deleteFunc }: DescriptorProps) {
 		<div className="descriptor" key={descriptor.sha256}>
 			{isImageUrl(descriptor.url) ? (
 				// biome-ignore lint/a11y/useAltText: <explanation>
-				<img
-					className="blossom-image-thumbnail"
-					src={descriptor.url.replace('https://', 'http://')}
-				/>
+				<img className="blossom-image-thumbnail" src={descriptor.url} />
 			) : (
 				<a href={descriptor.url}>{descriptor.url}</a>
 			)}

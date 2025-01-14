@@ -24,7 +24,7 @@ export async function constructBlossomBaseEvent({
 	});
 }
 
-export async function fromPayload(payload: File): Promise<EventHash> {
+export async function fromFile(payload: File): Promise<EventHash> {
 	const payloadHash = await getPayloadSha256(payload);
 	const event = await constructBlossomBaseEvent({
 		payloadHash,
