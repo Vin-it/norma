@@ -35,6 +35,7 @@ export function Blossom() {
 		if (response.ok) {
 			const result = await response.json();
 			if (result) {
+				console.log(result);
 				loadData();
 			}
 		}

@@ -1,64 +1,56 @@
 import { type EventHash, getPayloadSha256 } from './general.utils';
 
-export async function constructBlossomUploadEvent(payload: string) {
+type TagType = 'upload' | 'list' | 'delete';
+
+export async function constructBlossomBaseEvent({
+	content,
+	payloadHash,
+	tagType,
+}: { content: string; payloadHash?: string; tagType: TagType }) {
 	const createdAt = Math.floor(new Date().getTime() / 1000);
+	const tags = [
+		['t', tagType],
+		['expiration', `${createdAt + 3600}`],
+	];
+	if (payloadHash) {
+		tags.push(['x', payloadHash]);
+	}
 	return window.nostr?.signEvent({
 		pubkey: await window.nostr?.getPublicKey(),
-		content: 'upload file',
+		content,
 		kind: 24242,
 		created_at: createdAt,
-		tags: [
-			['t', 'upload'],
-			['expiration', `${createdAt + 3600}`],
-			['x', payload],
-		],
-	});
-}
-
-export async function constructBlossomListEvent() {
-	const createdAt = Math.floor(new Date().getTime() / 1000);
-	return window.nostr?.signEvent({
-		pubkey: await window.nostr?.getPublicKey(),
-		content: 'list blobs',
-		kind: 24242,
-		created_at: createdAt,
-		tags: [
-			['t', 'list'],
-			['expiration', `${createdAt + 3600}`],
-		],
-	});
-}
-
-export async function constructBlossomDeleteEvent(hash: string) {
-	const createdAt = Math.floor(new Date().getTime() / 1000);
-	return window.nostr?.signEvent({
-		pubkey: await window.nostr?.getPublicKey(),
-		content: 'delete blob',
-		kind: 24242,
-		created_at: Math.floor(new Date().getTime() / 1000),
-		tags: [
-			['t', 'delete'],
-			['expiration', `${createdAt + 3600}`],
-			['x', hash],
-		],
+		tags,
 	});
 }
 
 export async function fromPayload(payload: File): Promise<EventHash> {
 	const payloadHash = await getPayloadSha256(payload);
-	const event = await constructBlossomUploadEvent(payloadHash);
+	const event = await constructBlossomBaseEvent({
+		payloadHash,
+		content: `upload ${payload.name}.${payload.type}`,
+		tagType: 'upload',
+	});
 	const eventBase64 = btoa(JSON.stringify(event));
 	return eventBase64;
 }
 
 export async function fromEvent(): Promise<EventHash> {
-	const event = await constructBlossomListEvent();
+	const event = await constructBlossomBaseEvent({
+		content: 'List blobs',
+		tagType: 'list',
+	});
 	const eventBase64 = btoa(JSON.stringify(event));
 	return eventBase64;
 }
 
 export async function fromHash(hash: string): Promise<EventHash> {
-	const event = await constructBlossomDeleteEvent(hash);
+	const event = await constructBlossomBaseEvent({
+		content: 'delete blob',
+		tagType: 'delete',
+		payloadHash: hash,
+	});
+
 	const eventBase64 = btoa(JSON.stringify(event));
 	return eventBase64;
 }
