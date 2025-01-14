@@ -1,4 +1,4 @@
-import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { type ChangeEvent, useCallback, useState } from 'react';
 import { listAllowedPubkeys } from '../Pubkeys/api';
 import { deleteBlossom, listBlossom, uploadBlossom } from './api';
 
@@ -12,6 +12,7 @@ export function Blossom() {
 	const [descrptors, setDescriptors] = useState<Descriptor[]>([]);
 	const [successMsg, setSuccessMsg] = useState('');
 	const [randomStr, setRandomStr] = useState('');
+	const [pubkeyInput, setPubkeyInput] = useState('');
 
 	const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
@@ -32,12 +33,22 @@ export function Blossom() {
 					setSuccessMsg('');
 				}, 2000);
 				setFile(undefined);
-				loadData();
+				if (pubkeyInput) {
+					loadData(pubkeyInput);
+				}
 			}
 		}
 	};
 
-	const loadData = useCallback(async () => {
+	const loadData = useCallback(async (pubkey?: string) => {
+		if (pubkey) {
+			const response = await listBlossom(pubkey);
+			if (response.ok) {
+				const descriptorList = (await response.json()) as Descriptor[];
+				setDescriptors(descriptorList);
+			}
+			return;
+		}
 		const response = await listAllowedPubkeys();
 		if (response.error !== null) {
 			return;
@@ -58,13 +69,9 @@ export function Blossom() {
 	const deleteBlob = async (hash: string) => {
 		const response = await deleteBlossom(hash);
 		if (response.ok) {
-			loadData();
+			loadData(pubkeyInput);
 		}
 	};
-
-	useEffect(() => {
-		loadData();
-	}, [loadData]);
 
 	return (
 		<>
@@ -77,6 +84,15 @@ export function Blossom() {
 			<hr />
 			<div>
 				<h3>Blobs</h3>
+				<input
+					value={pubkeyInput}
+					onChange={(e) => setPubkeyInput(e.target.value)}
+					placeholder="enter pubkey to get blobs"
+					type="text"
+				/>
+				<button type="button" onClick={() => loadData(pubkeyInput)}>
+					Get Blobs
+				</button>
 				<div className="descriptor-list">
 					{descrptors.map((d) => (
 						<Descriptor key={d.sha256} descriptor={d} deleteFunc={deleteBlob} />
