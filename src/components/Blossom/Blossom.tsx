@@ -10,6 +10,8 @@ interface Descriptor {
 export function Blossom() {
 	const [file, setFile] = useState<File>();
 	const [descrptors, setDescriptors] = useState<Descriptor[]>([]);
+	const [successMsg, setSuccessMsg] = useState('');
+	const [randomStr, setRandomStr] = useState('');
 
 	const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
@@ -22,7 +24,14 @@ export function Blossom() {
 		const response = await uploadBlossom(file);
 		if (response.ok) {
 			const result = await response.json();
-			if (result) {
+
+			if (typeof result === 'object' && 'url' in result) {
+				setRandomStr(Math.random().toString(36));
+				setSuccessMsg('Upload successful');
+				setTimeout(() => {
+					setSuccessMsg('');
+				}, 2000);
+				setFile(undefined);
 				loadData();
 			}
 		}
@@ -60,10 +69,11 @@ export function Blossom() {
 	return (
 		<>
 			<h3>Blossom</h3>
-			<input type="file" onChange={handleFileChange} />
+			<input type="file" key={randomStr} onChange={handleFileChange} />
 			<button type="button" onClick={handleUpload}>
 				Upload
 			</button>
+			{successMsg && <p>{successMsg}</p>}
 			<hr />
 			<div>
 				<h3>Blobs</h3>
